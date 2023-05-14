@@ -1,0 +1,60 @@
+---
+title: "NFL Data Viz"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(nflfastR)
+library(ggimage)
+library(gt)
+library(ggthemes)
+```
+
+
+```{r}
+# Pulls up a play by play from 2022-2022
+pbp <- load_pbp(2022:2022)
+```
+
+
+```{r}
+# Creating a table to get EPA/play and adding a pass rate column and a join teams_colors_logos
+qb_epa_play <- pbp |> 
+  filter(pass == 1 | rush == 1, !is.na(epa), !is.na(cpoe), !is.na(wpa)) |> 
+  group_by(id) |> 
+  summarize(name = first(name),
+            team = last(posteam),
+            plays = n(),
+            epa_play = mean(epa),
+            cpoe = mean(cpoe),
+            wpa_play = mean(wpa),
+            pass_attempts = sum(incomplete_pass + complete_pass, na.rm = TRUE)) |>
+  filter(plays >= 175, pass_attempts >= 150) |>
+  mutate(pass_rate = pass_attempts / plays) |>
+  left_join(teams_colors_logos, by = c("team" = "team_abbr"))
+```
+
+
+```{r}
+# Creates a scatter plot with EPA/Play and CPOE
+qb_epa_play |> ggplot(aes(x = cpoe, y = epa_play)) +
+  geom_point(aes(fill = team_color, color = team_color2, size = plays), shape = 21, alpha = 0.9) + 
+scale_color_identity(aesthetics = c("fill", "color")) + 
+ggrepel:: geom_label_repel(aes(label = name)) + theme_bw() + geom_hline(yintercept = mean(qb_epa_play$epa_play), linetype = "dashed") + geom_vline(xintercept = mean(qb_epa_play$cpoe), linetype = "dashed") + labs(x = "CPOE", y = "EPA/Play", title = "EPA/Play and CPOE, 2022", subtitle = "Minimum of 175 plays and 150 pass attempts to be included") + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+#ggsave("EPA-CPOE-2022.png", width = 14, height = 10, dpi = "retina")
+```
+
+```{r}
+# Creates a scatter plot with WPA/Play and CPOE
+qb_epa_play |> ggplot(aes(x = cpoe, y = wpa_play)) +
+  geom_point(aes(fill = team_color, color = team_color2, size = plays), shape = 21, alpha = 0.9) + 
+scale_color_identity(aesthetics = c("fill", "color")) + 
+ggrepel:: geom_label_repel(aes(label = name)) + theme_bw() + geom_hline(yintercept = mean(qb_epa_play$wpa_play), linetype = "dashed") + geom_vline(xintercept = mean(qb_epa_play$cpoe), linetype = "dashed") + labs(x = "CPOE", y = "WPA/Play", title = "WPA/Play and CPOE, 2022", subtitle = "Minimum of 175 plays and 150 pass attempts to be included") + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+#ggsave("WPA-CPOE-2022.png", width = 14, height = 10, dpi = "retina")
+```
+

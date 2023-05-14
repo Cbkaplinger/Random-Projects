@@ -1,0 +1,40 @@
+---
+title: "MLB Data Viz"
+---
+
+```{r}
+library(baseballr)
+library(mlbplotR)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(gghighlight)
+```
+
+```{r}
+source("All MLB Functions.R")
+```
+
+
+```{r}
+fg_batter |> ggplot(aes(x = `BB_pct`, y = `Z-Swing_pct`)) +
+  geom_point(aes(fill = primary, color = secondary, size = PA), shape = 21, alpha = 0.9) +
+scale_color_identity(aesthetics = c("fill", "color")) +
+#gghighlight(Name == "Vinnie Pasquantino") +
+ggrepel:: geom_label_repel(aes(label = Name)) + theme_bw() + geom_hline(yintercept = mean(fg_batter$`Z-Swing_pct`), linetype = "dashed") + geom_vline(xintercept = mean(fg_batter$`BB_pct`), linetype = "dashed") + labs(x = "BB%", y = "Z-Swing%", title = "BB% and O-Swing%, 2023", caption = "Data: FanGraphs | @Cam_Kaplinger") + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+#ggsave("Charts/BB_pct and O-Swing_pct, 5-14-2023.png", width = 14, height = 10, dpi = "retina")
+```
+
+
+```{r}
+fg_pitcher|> ggplot(aes(x = BABIP, y = ERA-SIERA)) +
+  geom_point(aes(fill = primary, color = secondary, size = Pitches), shape = 21, alpha = 0.9) + 
+scale_color_identity(aesthetics = c("fill", "color")) +
+#gghighlight(Name == "Dylan Cease") +
+ggrepel:: geom_label_repel(aes(label = Name)) + theme_bw() + geom_hline(yintercept = mean(fg_pitcher$ERA - fg_pitcher$SIERA), linetype = "dashed") + geom_vline(xintercept = mean(fg_pitcher$BABIP), linetype = "dashed") + labs(x = "BABIP", y = "ERA-SIERA", title = "BABIP and ERA-SIERA, 2023", caption = "Data: FanGraphs | @Cam_Kaplinger") + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+#ggsave("Charts/BABIP and ERA-SIERA, 5-14-2023.png", width = 14, height = 10, dpi = "retina")
+```

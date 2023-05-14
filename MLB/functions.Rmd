@@ -1,0 +1,100 @@
+---
+title: "R Notebook"
+---
+
+
+```{r}
+library(baseballr)
+library(mlbplotR)
+library(dplyr)
+library(teamcolors)
+```
+
+```{r}
+MLB_colors = teamcolors[teamcolors$league == "mlb",]
+
+Team = c("ARI", "ATL", "BAL", "BOS", "CHC", "CHW", "CIN", "CLE", "COL", "DET", "HOU", "KCR", "LAA", "LAD", "MIA", "MIL", "MIN", "NYM", "NYY", "OAK", "PHI", "PIT", "SDP", "SFG", "SEA", "STL", "TBR", "TEX", "TOR", "WAS")
+
+MLB_colors = cbind(MLB_colors, Team)
+MLB_colors
+```
+
+
+```{r}
+bref_batter <- bref_daily_batter("2023-03-30", "2023-05-04")
+bref_pitcher <- bref_daily_pitcher("2023-03-30", "2023-05-04")
+
+head(brefbatter)
+head(brefpitcher)
+```
+
+Calculates wOBA for players
+```{r}
+wOBA = bref_batter %>%
+  dplyr::filter(PA > 30) %>%
+  woba_plus %>%
+  dplyr::arrange(desc(wOBA)) %>%
+  dplyr::select(Name, Team, season, PA, wOBA, wOBA_CON)
+
+head(wOBA)
+```
+
+Calculates FIP for players
+```{r}
+FIP = bref_pitcher %>% 
+  fip_plus() %>% 
+  dplyr::select(season, Name, IP, ERA, SO, uBB, HBP, HR, FIP, wOBA_against, wOBA_CON_against) %>%
+  dplyr::arrange(dplyr::desc(IP))
+
+head(FIP)
+```
+
+
+How to lookup for batter fangraphs stats
+```{r}
+Trout <- playerid_lookup("Trout", "Mike")
+Trout_id <- Trout$fangraphs_id
+fg_data_trout <-
+  fg_batter_game_logs(playerid = Trout_id, year = 2022)
+head(fg_data_trout)
+```
+
+
+How to lookup for pitcher fangraphs stats
+```{r}
+Nola <- playerid_lookup("Nola", "Aaron")
+Nola_id <- Nola$fangraphs_id
+fg_data_nola <-
+  fg_pitcher_game_logs(playerid = Nola_id, year = 2022)
+head(fg_data_nola)
+```
+
+Fangraphs batter data
+```{r}
+fg_batter <- fg_batter_leaders(2023, 2023)
+head(fg_batter)
+```
+
+Fangraphs pitcher data
+```{r}
+fg_pitcher <- fg_pitcher_leaders(2023, 2023) |> left_join(MLB_colors, by = c("Team" = "Team"))
+head(fg_pitcher)
+```
+
+Statcast section
+```{r}
+sc_batter <- statcast_leaderboards(leaderboard = "expected_statistics", player_type = "batter", year = 2023, min_pa = 50)
+head(sc_batter)
+```
+
+```{r}
+sc_pitcher <- statcast_leaderboards(leaderboard = "expected_statistics", player_type = "pitcher", year = 2023, min_pa = 25)
+head(sc_pitcher)
+```
+
+
+```{r}
+plot(sc_batter$pa, sc_batter$est_woba)
+```
+
+
