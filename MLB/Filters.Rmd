@@ -1,0 +1,30 @@
+---
+title: "Filters"
+---
+
+```{r}
+library(baseballr)
+library(mlbplotR)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(gghighlight)
+```
+
+
+```{r}
+source("All MLB Functions.R")
+```
+
+
+```{r}
+filter = subset(sc_batter, est_woba > 0.360 & est_woba_minus_woba_diff < -0.03)
+filter
+```
+
+```{r}
+filter = subset(batter, est_woba > 0.370 & est_woba_minus_woba_diff < -0.035)
+filter
+```
+
+

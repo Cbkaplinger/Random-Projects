@@ -1,13 +1,11 @@
 ---
 title: "MLB Data Viz"
-output: html_notebook
 ---
 
 ```{r}
 library(baseballr)
 library(mlbplotR)
 library(dplyr)
-library(teamcolors)
 library(ggplot2)
 library(tidyverse)
 library(gghighlight)
@@ -15,46 +13,65 @@ library(gghighlight)
 
 
 ```{r}
-# Filters the teamcolors package to only include MLB teams
-MLB_colors = teamcolors[teamcolors$league == "mlb",]
-
-# Creates and adds the abbreviations of the MLB teams to the MLB_colors df
-Team = c("ARI", "ATL", "BAL", "BOS", "CHC", "CHW", "CIN", "CLE", "COL", "DET", "HOU", "KCR", "LAA", "LAD", "MIA", "MIL", "MIN", "NYM", "NYY", "OAK", "PHI", "PIT", "SDP", "SFG", "SEA", "STL", "TBR", "TEX", "TOR", "WAS")
-MLB_colors = cbind(MLB_colors, Team)
+source("All MLB Functions.R")
 ```
 
-
+Batter Graphs
 ```{r}
-# Fangraphs batter data
-fg_batter <- fg_batter_leaders(2023, 2023) |> left_join(MLB_colors, by = c("Team" = "Team"))
+x = batter$`sprint_speed`
+y = batter$`Contact_pct_(sc)`
 
-# Fangraphs pitcher data
-fg_pitcher <- fg_pitcher_leaders(2023, 2023) |> left_join(MLB_colors, by = c("Team" = "Team"))
-```
+line <-lm(formula = y ~ x, data=batter)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
 
-
-FG Batter Graphs
-```{r}
-fg_batter |> ggplot(aes(x = `Contact_pct`, y = `Z-Swing_pct`)) +
+batter |> ggplot(aes(x = `sprint_speed`, y = `Contact_pct_(sc)`)) +
   geom_point(aes(fill = primary, color = secondary, size = PA), shape = 21, alpha = 0.9) +
 scale_color_identity(aesthetics = c("fill", "color")) +
-#gghighlight(Name == "Vinnie Pasquantino") +
+#gghighlight(Name == "Luis Robert Jr") +
 #gghighlight(Team == "MIN") +
-ggrepel:: geom_label_repel(aes(label = Name)) + theme_bw() + geom_hline(yintercept = mean(fg_batter$`Z-Swing_pct`), linetype = "dashed") + geom_vline(xintercept = mean(fg_batter$Contact_pct), linetype = "dashed") + labs(x = "Contact%", y = "Z-Swing%", title = "Contact and Z Swing%, 2023", caption = "Data: FanGraphs | @Cam_Kaplinger") + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
+#geom_abline(intercept = intercept, slope = slope, color="black", linetype="dashed", size=.5) +  
+ggrepel:: geom_label_repel(aes(label = Name)) + theme_bw() + 
+  geom_hline(yintercept = mean(y), linetype = "dashed") + 
+  geom_vline(xintercept = mean(x), linetype = "dashed") + 
+  labs(x = "Max Exit Velo", y = "BB%", title = "Max exit velo and BB%, 2023", caption = "Data: FanGraphs, Baseball Savant | @Cam_Kaplinger") + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
   theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
 
-#ggsave("Charts/Vinnie Pasquantino/Contact and Z Swing_pct, 5-14-2023.png", width = 14, height = 10, dpi = "retina")
+#ggsave("Charts/General/Barrels and Homers, 5-23-2023.png", width = 14, height = 10, dpi = "retina")
 ```
 
-FG Pitcher Graphs
+
+
+Pitcher Graphs
 ```{r}
-fg_pitcher|> ggplot(aes(x = BABIP, y = ERA-SIERA)) +
-  geom_point(aes(fill = primary, color = secondary, size = Pitches), shape = 21, alpha = 0.9) + 
+x = pitcher$`SwStr_pct`
+y = pitcher$`SIERA`
+
+line <-lm(y ~ x, data=pitcher)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+pitcher|> ggplot(aes(x = `SwStr_pct`, y = `SIERA`)) +
+  geom_point(aes(fill = primary, color = secondary, size = `Pitches`), shape = 21, alpha = 0.9) + 
 scale_color_identity(aesthetics = c("fill", "color")) +
-#gghighlight(Name == "Dylan Cease") +
+#gghighlight(Name == "Luis Castillo") +
 #gghighlight(Team == "MIN") +
-ggrepel:: geom_label_repel(aes(label = Name)) + theme_bw() + geom_hline(yintercept = mean(fg_pitcher$ERA - fg_pitcher$SIERA), linetype = "dashed") + geom_vline(xintercept = mean(fg_pitcher$BABIP), linetype = "dashed") + labs(x = "BABIP", y = "ERA-SIERA", title = "BABIP and ERA-SIERA, 2023", caption = "Data: FanGraphs | @Cam_Kaplinger") + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
+#geom_abline(intercept = intercept, slope = slope, color="black", linetype="dashed", size=.5) + 
+ggrepel:: geom_label_repel(aes(label = Name)) + theme_bw() + 
+  geom_hline(yintercept = mean(y), linetype = "dashed") + 
+  geom_vline(xintercept = mean(x), linetype = "dashed") + 
+  labs(x = "SwStr%", y = "SIERA", title = "SwStr% and SIERA, 2023", caption = "Data: FanGraphs | @Cam_Kaplinger") + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
   theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
 
-#ggsave("Charts/BABIP and ERA-SIERA, 5-14-2023.png", width = 14, height = 10, dpi = "retina")
+#ggsave("Charts/General/Spencer Strider/SwStr pct and SIERA, 5-29-2023.png", width = 14, height = 10, dpi = "retina")
 ```
+
+
+```{r}
+residuals = line$residuals
+sorted_residuals <- sort(residuals, decreasing = TRUE)
+largest_residuals <- head(sorted_residuals, n = 5)
+largest_residuals
+```
+
+
