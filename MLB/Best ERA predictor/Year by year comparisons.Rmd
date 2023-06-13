@@ -1,0 +1,291 @@
+---
+title: "Year by year comparisons"
+---
+
+
+```{r}
+library(baseballr)
+library(mlbplotR)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(gghighlight)
+```
+
+
+```{r}
+source("2021 Functions and 2022 ERA.R")
+```
+
+
+```{r}
+ERA2021 = final$ERA_2021
+ERA2022 = final$ERA_2022
+
+line <-lm(ERA2022 ~ ERA2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+ERAvERA = cor(ERA2021, ERA2022)
+ERAvERA = ERAvERA^2
+
+final |> ggplot(aes(x = ERA2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "ERA 2021", y = "ERA 2022", title = "ERA 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(ERAvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/ERA.png", width = 10, height = 7, dpi = "retina")
+```
+
+```{r}
+FIP2021 = final$FIP_2021
+
+line <-lm(ERA2022 ~ FIP2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+FIPvERA = cor(FIP2021, ERA2022)
+FIPvERA = FIPvERA^2
+
+final |> ggplot(aes(x = FIP2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "FIP 2021", y = "ERA 2022", title = "FIP 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(FIPvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/FIP.png", width = 10, height = 7, dpi = "retina")
+```
+
+```{r}
+xFIP2021 = final$xFIP_2021
+
+line <-lm(ERA2022 ~ xFIP2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+xFIPvERA = cor(xFIP2021, ERA2022)
+xFIPvERA = xFIPvERA^2
+
+final |> ggplot(aes(x = xFIP2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "xFIP 2021", y = "ERA 2022", title = "xFIP 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(xFIPvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/xFIP.png", width = 10, height = 7, dpi = "retina")
+```
+
+```{r}
+SIERA2021 = final$SIERA_2021
+
+line <-lm(ERA2022 ~ SIERA2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+SIERAvERA = cor(SIERA2021, ERA2022)
+SIERAvERA = SIERAvERA^2
+
+final |> ggplot(aes(x = SIERA2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "SIERA 2021", y = "ERA 2022", title = "SIERA 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(SIERAvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/SIERA.png", width = 10, height = 7, dpi = "retina")
+```
+
+
+```{r}
+xERA2021 = final$xERA_2021
+
+line <-lm(ERA2022 ~ xERA2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+xERAvERA = cor(xERA2021, ERA2022)
+xERAvERA = xERAvERA^2
+
+final |> ggplot(aes(x = xERA2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "xERA 2021", y = "ERA 2022", title = "xERA 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(xERAvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/xERA.png", width = 10, height = 7, dpi = "retina")
+```
+
+
+```{r}
+pCRA2021 = final$pCRA_2021
+
+line <-lm(ERA2022 ~ pCRA2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+pCRAvERA = cor(pCRA2021, ERA2022)
+pCRAvERA = pCRAvERA^2
+
+final |> ggplot(aes(x = pCRA2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "pCRA 2021", y = "ERA 2022", title = "pCRA 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(pCRAvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/pCRA.png", width = 10, height = 7, dpi = "retina")
+```
+
+
+```{r}
+FRA2021 = final$FRA_2021
+
+line <-lm(ERA2022 ~ FRA2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+FRAvERA = cor(FRA2021, ERA2022)
+FRAvERA = FRAvERA^2
+
+final |> ggplot(aes(x = FRA2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "FRA 2021", y = "ERA 2022", title = "FRA 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(xERAvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/FRA.png", width = 10, height = 7, dpi = "retina")
+```
+
+
+```{r}
+K2021 = final$K_pct_2021
+
+line <-lm(ERA2022 ~ K2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+KvERA = cor(K2021, ERA2022)
+KvERA = KvERA^2
+
+final |> ggplot(aes(x = K2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "K% 2021", y = "ERA 2022", title = "K% 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(KvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/K_pct.png", width = 10, height = 7, dpi = "retina")
+```
+
+
+```{r}
+K_BB2021 = final$`K-BB_pct_2021`
+
+line <-lm(ERA2022 ~ K_BB2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+K_BBvERA = cor(K_BB2021, ERA2022)
+K_BBvERA = K_BBvERA^2
+
+final |> ggplot(aes(x = K_BB2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "K-BB% 2021", y = "ERA 2022", title = "K-BB% 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(K_BBvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/K_BB_pct.png", width = 10, height = 7, dpi = "retina")
+```
+
+```{r}
+wOBA2021 = final$`wOBA_2021`
+
+line <-lm(ERA2022 ~ wOBA2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+wOBAvERA = cor(wOBA2021, ERA2022)
+wOBAvERA = wOBAvERA^2
+
+final |> ggplot(aes(x = wOBA2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "wOBA 2021", y = "ERA 2022", title = "wOBA 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(wOBAvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/wOBA.png", width = 10, height = 7, dpi = "retina")
+```
+
+
+```{r}
+xwOBA2021 = final$`xwOBA_2021`
+
+line <-lm(ERA2022 ~ xwOBA2021)   
+intercept<-line$coefficients[1]
+slope<- line$coefficients[2]
+
+xwOBAvERA = cor(xwOBA2021, ERA2022)
+xwOBAvERA = xwOBAvERA^2
+
+final |> ggplot(aes(x = xwOBA2021, y = ERA2022)) +
+  geom_point(color = "Red") +
+  labs(x = "xwOBA 2021", y = "ERA 2022", title = "xwOBA 2021 vs ERA 2022") +
+  annotate("text", x = Inf, y = -Inf, label = paste("R-squared =", round(xwOBAvERA, 3)), hjust = 1, vjust = 0) +
+  geom_abline(intercept = intercept, slope = slope, color="black", linetype="solid", size=.5) + 
+  theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
+
+# Calculates RMSE
+rmse <- sqrt(mean(line$residuals^2))
+rmse
+
+ggsave("Graphs/xwOBA.png", width = 10, height = 7, dpi = "retina")
+```
+
