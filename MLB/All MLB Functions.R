@@ -1,4 +1,5 @@
 library(baseballr)
+library(tidyverse)
 library(dplyr)
 library(teamcolors)
 library(stringr)
@@ -15,12 +16,12 @@ MLB_colors = cbind(MLB_colors, Team)
 
 
 # Fangraphs batter data
-fg_batter <- fg_batter_leaders(2023, 2023, "all") |> left_join(MLB_colors, by = c("Team" = "Team"))
+fg_batter <- fg_batter_leaders(2023, 2023, "all", "50") |> left_join(MLB_colors, by = c("Team" = "Team"))
 fg_batter$Name[fg_batter$Name == "Luis Robert"] <- "Luis Robert Jr."
 
 
 # Fangraphs pitcher data
-fg_pitcher <- fg_pitcher_leaders(2023, 2023, "all") |> left_join(MLB_colors, by = c("Team" = "Team"))
+fg_pitcher <- fg_pitcher_leaders(2023, 2023, "all", "75") |> left_join(MLB_colors, by = c("Team" = "Team"))
 
 
 #Loads in Statcast batter data
@@ -57,7 +58,7 @@ for (i in colnames(sc_batter)){
 }
 
 # Renames the brl_percent column to Barrel Rate
-colnames(sc_batter)[colnames(sc_batter) == "brl_percent"] ="Barrel Rate"
+colnames(sc_batter)[colnames(sc_batter) == "brl_percent"] ="Barrel_Rate"
 
 
 # Loads in Statcast pitcher data
@@ -88,7 +89,7 @@ for (i in colnames(sc_batter)){
 }
 
 # Renames the brl_percent column to Barrel Rate
-colnames(sc_pitcher)[colnames(sc_pitcher) == "brl_percent"] ="Barrel Rate"
+colnames(sc_pitcher)[colnames(sc_pitcher) == "brl_percent"] ="Barrel_Rate"
 
 
 # Combines the Statcast and FanGraphs tables together
@@ -159,7 +160,7 @@ pitcher$bip_pct = round(pitcher$bip_pct, 2) * 100
 pitcher$strike_pct = round(pitcher$strike_pct, 2) * 100
 
 # Creating a table for the most important pitcher stats
-best_stats = subset(pitcher, select = c(Name, ERA, FIP, xFIP, SIERA, xera, pCRA, FRA, BABIP, strike_pct, ball_pct, bip_pct, GB_pct, SwStr_pct, `K-BB_pct`, woba, est_woba))
+best_stats = subset(pitcher, select = c(Name, ERA, FIP, xFIP, SIERA, xera, pCRA, FRA, BABIP, LOB_pct, strike_pct, ball_pct, bip_pct, GB_pct, SwStr_pct, `K-BB_pct`, woba, est_woba))
 
 # Creating a table to see who's performance is the most sustainable
 pitcher$era_minus_SIERA = pitcher$era - pitcher$SIERA

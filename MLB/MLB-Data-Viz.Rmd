@@ -5,7 +5,6 @@ title: "MLB Data Viz"
 ```{r}
 library(baseballr)
 library(mlbplotR)
-library(dplyr)
 library(ggplot2)
 library(tidyverse)
 library(gghighlight)
@@ -15,26 +14,29 @@ library(gghighlight)
 ```{r}
 source("All MLB Functions.R")
 ```
+```{r}
+head(batter)
+```
 
 Batter Graphs
 ```{r}
-x = batter$`sprint_speed`
-y = batter$`Contact_pct_(sc)`
+x = batter$`barrels`
+y = batter$`HR`
 
 line <-lm(formula = y ~ x, data=batter)   
 intercept<-line$coefficients[1]
 slope<- line$coefficients[2]
 
-batter |> ggplot(aes(x = `sprint_speed`, y = `Contact_pct_(sc)`)) +
+batter |> ggplot(aes(x = `barrels`, y = `HR`)) +
   geom_point(aes(fill = primary, color = secondary, size = PA), shape = 21, alpha = 0.9) +
 scale_color_identity(aesthetics = c("fill", "color")) +
 #gghighlight(Name == "Luis Robert Jr") +
 #gghighlight(Team == "MIN") +
-#geom_abline(intercept = intercept, slope = slope, color="black", linetype="dashed", size=.5) +  
-ggrepel:: geom_label_repel(aes(label = Name)) + theme_bw() + 
-  geom_hline(yintercept = mean(y), linetype = "dashed") + 
-  geom_vline(xintercept = mean(x), linetype = "dashed") + 
-  labs(x = "Max Exit Velo", y = "BB%", title = "Max exit velo and BB%, 2023", caption = "Data: FanGraphs, Baseball Savant | @Cam_Kaplinger") + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
+geom_abline(intercept = intercept, slope = slope, color="black", linetype="dashed", size=.5) +  
+ggrepel:: geom_label_repel(aes(label = Name)) + theme_bw() +
+  #geom_vline(xintercept = mean(x), linetype = "dashed") + 
+  #geom_hline(yintercept = mean(y), linetype = "dashed") + 
+  labs(x = "Barrels", y = "HR", title = "Barrels and HR, 2023", caption = "Data: FanGraphs, Baseball Savant | @Cam_Kaplinger") + scale_x_continuous(breaks = scales::pretty_breaks(n = 8)) + scale_y_continuous(breaks = scales::pretty_breaks(n = 8)) +
   theme(plot.title = element_text(size = 22, hjust = 0.5, face = "bold"), plot.subtitle = element_text(size = 16, hjust = 0.5))
 
 #ggsave("Charts/General/Barrels and Homers, 5-23-2023.png", width = 14, height = 10, dpi = "retina")
@@ -70,8 +72,9 @@ ggrepel:: geom_label_repel(aes(label = Name)) + theme_bw() +
 ```{r}
 residuals = line$residuals
 sorted_residuals <- sort(residuals, decreasing = TRUE)
-largest_residuals <- head(sorted_residuals, n = 5)
-largest_residuals
+#largest_residuals <- head(sorted_residuals, n = 5)
+#largest_residuals
+residuals
 ```
 
 
