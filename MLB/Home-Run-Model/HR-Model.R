@@ -5,7 +5,7 @@ library(ggplot2)
 library(varImp)
 
 
-source("~/Desktop/random-projects/MLB/All MLB Functions.R")
+source("All-MLB-Functions-HR.R")
 
 # Selecting the stats that I feel are predictive for Home Runs
 HRdf = subset(batter, select = c(PA, K_pct, BB_pct, Barrel_Rate, brl_pa, wRC_plus, woba, est_woba, max_distance, avg_hr_distance, avg_hit_angle, avg_hit_speed, max_hit_speed, slg, est_slg, anglesweetspotpercent, ev95percent, ISO, GB_pct, LD_pct, FB_pct, Pull_pct, Cent_pct, Oppo_pct, HR_FB, HR, Team))

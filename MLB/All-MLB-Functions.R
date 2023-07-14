@@ -97,7 +97,7 @@ batter = fg_batter |> left_join(sc_batter, by = c("Name" = "Name"))
 pitcher = fg_pitcher |> left_join(sc_pitcher, by = c("Name" = "Name"))
 
 # Gets rid of all the periods in a name
-for (i in colnames(sc_batter)){
+for (i in colnames(pitcher)){
   pitcher$Name = str_replace_all(pitcher$Name, fixed("."), "")
 }
 for (i in colnames(batter)){
