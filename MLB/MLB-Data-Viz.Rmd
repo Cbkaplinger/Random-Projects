@@ -12,8 +12,10 @@ library(gghighlight)
 
 
 ```{r}
-source("All MLB Functions.R")
+source("All-MLB-Functions.R")
 ```
+
+
 ```{r}
 head(batter)
 ```
