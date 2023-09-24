@@ -17,8 +17,8 @@ MLB_colors = cbind(MLB_colors, Team)
 
 # Fangraphs batter data
 fg_batter <- fg_batter_leaders(2023, 2023, "all", "50") |> left_join(MLB_colors, by = c("Team" = "Team"))
-fg_batter$Name[fg_batter$Name == "Luis Robert"] <- "Luis Robert Jr."
 
+fg_batter$Name[fg_batter$Name == "Luis Robert"] <- "Luis Robert Jr."
 
 # Fangraphs pitcher data
 fg_pitcher <- fg_pitcher_leaders(2023, 2023, "all", "75") |> left_join(MLB_colors, by = c("Team" = "Team"))
