@@ -14,6 +14,8 @@ library(rsconnect)
 library(DT)
 library(formattable)
 library(tidyverse)
+library(hrbrthemes)
+library(viridis)
 
 
 # Loads in the files used
@@ -309,6 +311,7 @@ server <- function(input, output) {
       scale_color_manual(values = rainbow(length(unique(ALpitch()$`PitchType`)))) +
       theme_minimal()
   })
+  
   output$ALAll_plate_side_height_plot <- renderPlot({
     ggplot(ALpitch(), aes(x = plate_x, y = plate_z, color = `PitchType`)) +
       geom_point(size = 3) +
