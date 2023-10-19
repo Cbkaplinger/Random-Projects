@@ -74,10 +74,10 @@ ui <- dashboardPage(
                 column(width = 5, plotOutput("ALAll_release_side_height_plot")),
                 column(width = 5, plotOutput("ALAll_plate_side_height_plot"))
               ),
-              DTOutput("data_table_ALAll2")
+              DTOutput("data_table_ALAll")
               ),
       tabItem(tabName = "ALPitch_tab",
-              DTOutput("data_table_ALAll")
+              DTOutput("data_table_ALAll2")
               ),
       tabItem(tabName = "ALName_tab",
               DTOutput("data_table_ALName")
