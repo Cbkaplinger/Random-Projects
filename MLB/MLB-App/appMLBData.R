@@ -27,7 +27,7 @@ NLleagueNameStart <- read.csv("NLleagueNameStart.csv")
 
 MLBpitches = bind_rows(ALpitches, NLpitches)
 MLBleaguePitch = bind_rows(ALleaguePitch, NLleaguePitch) %>%
-  arrange(Name)
+  arrange(Name, Pitch.Type)
 MLBleagueName = bind_rows(ALleagueName, NLleagueName)
 MLBleagueNameStart = bind_rows(ALleagueNameStart, NLleagueNameStart)
 

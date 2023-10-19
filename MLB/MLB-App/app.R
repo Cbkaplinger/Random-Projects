@@ -26,17 +26,20 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("MLB Reports", tabName = "MLB_tab", icon = icon("baseball-ball"),
-               menuSubItem("MLB Pitches", tabName = "MLBAll_tab", icon = icon("baseball-ball")),
+               menuSubItem("MLB Pitches Overview", tabName = "MLBAll_tab", icon = icon("baseball-ball")),
+               menuSubItem("MLB Pitch Table", tabName = "MLBPitch_tab", icon = icon("baseball-ball")),
                menuSubItem("MLB Pitchers", tabName = "MLBName_tab", icon = icon("baseball-ball")),
                menuSubItem("MLB Starters", tabName = "MLBNameStart_tab", icon = icon("baseball-ball"))
                ),
       menuItem("AL Reports", tabName = "AL_tab", icon = icon("baseball-ball"),
-               menuSubItem("AL Pitches", tabName = "ALAll_tab", icon = icon("baseball-ball")),
+               menuSubItem("AL Pitches Overview", tabName = "ALAll_tab", icon = icon("baseball-ball")),
+               menuSubItem("AL Pitch Table", tabName = "ALPitch_tab", icon = icon("baseball-ball")),
                menuSubItem("AL Pitchers", tabName = "ALName_tab", icon = icon("baseball-ball")),
                menuSubItem("AL Starters", tabName = "ALNameStart_tab", icon = icon("baseball-ball"))
                ),
       menuItem("NL Reports", tabName = "NL_tab", icon = icon("baseball-ball"),
-               menuSubItem("NL Pitches", tabName = "NLAll_tab", icon = icon("baseball-ball")),
+               menuSubItem("NL Pitches Overview", tabName = "NLAll_tab", icon = icon("baseball-ball")),
+               menuSubItem("NL Pitch Table", tabName = "NLPitch_tab", icon = icon("baseball-ball")),
                menuSubItem("NL Pitchers", tabName = "NLName_tab", icon = icon("baseball-ball")),
                menuSubItem("NL Starters", tabName = "NLNameStart_tab", icon = icon("baseball-ball"))
                )
@@ -54,6 +57,9 @@ ui <- dashboardPage(
                 ),
               DTOutput("data_table_MLBAll")
               ),
+      tabItem(tabName = "MLBPitch_tab",
+              DTOutput("data_table_MLBAll2")
+              ),
       tabItem(tabName = "MLBName_tab",
               DTOutput("data_table_MLBName")
               ),
@@ -68,6 +74,9 @@ ui <- dashboardPage(
                 column(width = 5, plotOutput("ALAll_release_side_height_plot")),
                 column(width = 5, plotOutput("ALAll_plate_side_height_plot"))
               ),
+              DTOutput("data_table_ALAll2")
+              ),
+      tabItem(tabName = "ALPitch_tab",
               DTOutput("data_table_ALAll")
               ),
       tabItem(tabName = "ALName_tab",
@@ -85,7 +94,10 @@ ui <- dashboardPage(
                 column(width = 5, plotOutput("NLAll_plate_side_height_plot"))
               ),
               DTOutput("data_table_NLAll")
-      ),
+              ),
+      tabItem(tabName = "NLPitch_tab",
+              DTOutput("data_table_NLAll2")
+              ),
       tabItem(tabName = "NLName_tab",
               DTOutput("data_table_NLName")
       ),
@@ -128,6 +140,10 @@ server <- function(input, output) {
       filter(Name == input$name_select3)
   })
   
+  MLBAll2 = reactive({
+    MLBleaguePitch
+  })
+  
   MLBName = reactive({
     MLBleagueName
     })
@@ -136,6 +152,10 @@ server <- function(input, output) {
     MLBleagueNameStart
     })
   
+  ALAll2 = reactive({
+    ALleaguePitch
+  })
+  
   ALName = reactive({
     ALleagueName
     })
@@ -143,6 +163,10 @@ server <- function(input, output) {
   ALNameStart = reactive({
     ALleagueNameStart
     })
+  
+  NLAll2 = reactive({
+    NLleaguePitch
+  })
   
   NLName = reactive({
     ALleagueName
@@ -157,6 +181,10 @@ server <- function(input, output) {
     datatable(MLBAll(), options = list(pageLength = 20))
     })
   
+  output$data_table_MLBAll2 <- DT::renderDataTable({
+    datatable(MLBAll2(), options = list(pageLength = 20))
+  })
+  
   output$data_table_MLBName <- DT::renderDataTable({
     datatable(MLBName(), options = list(pageLength = 20))
     })
@@ -169,6 +197,10 @@ server <- function(input, output) {
     datatable(ALAll(), options = list(pageLength = 20))
     })
   
+  output$data_table_ALAll2 <- DT::renderDataTable({
+    datatable(ALAll2(), options = list(pageLength = 20))
+  })
+  
   output$data_table_ALName <- DT::renderDataTable({
     datatable(ALName(), options = list(pageLength = 20))
     })
@@ -179,6 +211,10 @@ server <- function(input, output) {
   
   output$data_table_NLAll <- DT::renderDataTable({
     datatable(NLAll(), options = list(pageLength = 20))
+  })
+  
+  output$data_table_NLAll2 <- DT::renderDataTable({
+    datatable(NLAll2(), options = list(pageLength = 20))
   })
   
   output$data_table_NLName <- DT::renderDataTable({
