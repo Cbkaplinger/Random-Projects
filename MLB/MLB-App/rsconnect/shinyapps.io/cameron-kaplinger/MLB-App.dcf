@@ -5,7 +5,7 @@ account: cameron-kaplinger
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 10241400
-bundleId: 7823457
+bundleId:
 url: https://cameron-kaplinger.shinyapps.io/MLB-App/
 version: 1
 asMultiple: FALSE

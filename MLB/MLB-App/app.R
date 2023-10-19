@@ -42,9 +42,10 @@ ui <- dashboardPage(
                menuSubItem("NL Pitch Table", tabName = "NLPitch_tab", icon = icon("baseball-ball")),
                menuSubItem("NL Pitchers", tabName = "NLName_tab", icon = icon("baseball-ball")),
                menuSubItem("NL Starters", tabName = "NLNameStart_tab", icon = icon("baseball-ball"))
-               )
+               ),
+      menuItem("Glossary", tabName = "Glossary_tab", icon = icon("baseball-ball"))
       )
-  ),
+    ),
   dashboardBody(
     tabItems(
       tabItem(tabName = "MLBAll_tab",
@@ -103,8 +104,8 @@ ui <- dashboardPage(
       ),
       tabItem(tabName = "NLNameStart_tab",
               DTOutput("data_table_NLNameStart")
+              )
       )
-    )
   )
 )
 
@@ -178,91 +179,91 @@ server <- function(input, output) {
   
   # Render the tables
   output$data_table_MLBAll <- DT::renderDataTable({
-    datatable(MLBAll(), options = list(pageLength = 20))
+    datatable(MLBAll(), options = list(scrollX = TRUE, pageLength = 10))
     })
   
   output$data_table_MLBAll2 <- DT::renderDataTable({
-    datatable(MLBAll2(), options = list(pageLength = 20))
+    datatable(MLBAll2(), options = list(scrollX = TRUE, pageLength = 10))
   })
   
   output$data_table_MLBName <- DT::renderDataTable({
-    datatable(MLBName(), options = list(pageLength = 20))
+    datatable(MLBName(), options = list(scrollX = TRUE, pageLength = 10))
     })
   
   output$data_table_MLBNameStart <- DT::renderDataTable({
-    datatable(MLBNameStart(), options = list(pageLength = 20))
+    datatable(MLBNameStart(), options = list(scrollX = TRUE, pageLength = 10))
     })
   
   output$data_table_ALAll <- DT::renderDataTable({
-    datatable(ALAll(), options = list(pageLength = 20))
+    datatable(ALAll(), options = list(scrollX = TRUE, pageLength = 10))
     })
   
   output$data_table_ALAll2 <- DT::renderDataTable({
-    datatable(ALAll2(), options = list(pageLength = 20))
+    datatable(ALAll2(), options = list(scrollX = TRUE, pageLength = 10))
   })
   
   output$data_table_ALName <- DT::renderDataTable({
-    datatable(ALName(), options = list(pageLength = 20))
+    datatable(ALName(), options = list(scrollX = TRUE, pageLength = 10))
     })
   
   output$data_table_ALNameStart <- DT::renderDataTable({
-    datatable(ALNameStart(), options = list(pageLength = 20))
+    datatable(ALNameStart(), options = list(scrollX = TRUE, pageLength = 10))
     })
   
   output$data_table_NLAll <- DT::renderDataTable({
-    datatable(NLAll(), options = list(pageLength = 20))
+    datatable(NLAll(), options = list(scrollX = TRUE, pageLength = 10))
   })
   
   output$data_table_NLAll2 <- DT::renderDataTable({
-    datatable(NLAll2(), options = list(pageLength = 20))
+    datatable(NLAll2(), options = list(scrollX = TRUE, pageLength = 10))
   })
   
   output$data_table_NLName <- DT::renderDataTable({
-    datatable(NLName(), options = list(pageLength = 20))
+    datatable(NLName(), options = list(scrollX = TRUE, pageLength = 10))
   })
   
   output$data_table_NLNameStart <- DT::renderDataTable({
-    datatable(NLNameStart(), options = list(pageLength = 20))
+    datatable(NLNameStart(), options = list(scrollX = TRUE, pageLength = 10))
   })
   
   output$MLBAll_horz_IVB_plot <- renderPlot({
-    ggplot(MLBpitch(), aes(x = `HB`, y = `IVB`, color = `Pitch.Type`)) +
+    ggplot(MLBpitch(), aes(x = `HB`, y = `IVB`, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_vline(xintercept = 0, linetype = "dashed") +
       geom_hline(yintercept = 0, linetype = "dashed") +
-      xlim(-20, 20) +
-      ylim(-20, 20) +
+      xlim(-25, 25) +
+      ylim(-25, 25) +
       labs(x = "Horizontal Break (in)", y = "Induced Vertical Break (in)", title = "Movement") +
-      scale_color_manual(values = rainbow(length(unique(MLBpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(MLBpitch()$`PitchType`)))) +
       theme_minimal()
   })
   
   output$MLBAll_velocity_spin_plot <- renderPlot({
-    ggplot(MLBpitch(), aes(x = release_speed, y = release_spin_rate, color = `Pitch.Type`)) +
+    ggplot(MLBpitch(), aes(x = release_speed, y = release_spin_rate, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_vline(xintercept = 80, linetype = "dashed") +
       geom_hline(yintercept = 2000, linetype = "dashed") +
       xlim(60, 100) +
       ylim(1000, 3000) +
       labs(x = "Velocity (mph)", y = "Spin Rate (rpm)", title = "Velocity vs Spin Rate") +
-      scale_color_manual(values = rainbow(length(unique(MLBpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(MLBpitch()$`PitchType`)))) +
       theme_minimal()
   })
   
   output$MLBAll_release_side_height_plot <- renderPlot({
-    ggplot(MLBpitch(), aes(x = RelSide, y = RelHeight, color = `Pitch.Type`)) +
+    ggplot(MLBpitch(), aes(x = RelSide, y = RelHeight, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_vline(xintercept = 0, linetype = "dashed") + 
       geom_hline(yintercept = 4, linetype = "dashed") +
       xlim(-4, 4) +
       ylim(0, 8) +
       labs(x = "Release Side (ft)", y = "Release Height (ft)", title = "Release Point") +
-      scale_color_manual(values = rainbow(length(unique(MLBpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(MLBpitch()$`PitchType`)))) +
       theme_minimal()
   })
   
   output$MLBAll_plate_side_height_plot <- renderPlot({
-    ggplot(MLBpitch(), aes(x = plate_x, y = plate_z, color = `Pitch.Type`)) +
+    ggplot(MLBpitch(), aes(x = plate_x, y = plate_z, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_segment(x = -17/24, y = 1.5, xend = 17/24, yend = 1.5, color = "black") +
       geom_segment(x = -17/24, y = 1.5, xend = -17/24, yend = 3.5, color = "black") +
@@ -271,45 +272,45 @@ server <- function(input, output) {
       xlim(-4, 4) +
       ylim(-1, 7) +
       labs(x = "Plate Side (ft)", y = "Plate Height (ft)", title = "Pitch Location") +
-      scale_color_manual(values = rainbow(length(unique(MLBpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(MLBpitch()$`PitchType`)))) +
       theme_minimal()
   })
   
   output$ALAll_horz_IVB_plot <- renderPlot({
-    ggplot(ALpitch(), aes(x = `HB`, y = `IVB`, color = `Pitch.Type`)) +
+    ggplot(ALpitch(), aes(x = `HB`, y = `IVB`, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_vline(xintercept = 0, linetype = "dashed") +
       geom_hline(yintercept = 0, linetype = "dashed") +
-      xlim(-20, 20) +
-      ylim(-20, 20) +
+      xlim(-25, 25) +
+      ylim(-25, 25) +
       labs(x = "Horizontal Break (in)", y = "Induced Vertical Break (in)", title = "Movement") +
-      scale_color_manual(values = rainbow(length(unique(ALpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(ALpitch()$`PitchType`)))) +
       theme_minimal()
   })
   output$ALAll_velocity_spin_plot <- renderPlot({
-    ggplot(ALpitch(), aes(x = release_speed, y = release_spin_rate, color = `Pitch.Type`)) +
+    ggplot(ALpitch(), aes(x = release_speed, y = release_spin_rate, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_vline(xintercept = 80, linetype = "dashed") +
       geom_hline(yintercept = 2000, linetype = "dashed") +
       xlim(60, 100) +
       ylim(1000, 3000) +
       labs(x = "Velocity (mph)", y = "Spin Rate (rpm)", title = "Velocity vs Spin Rate") +
-      scale_color_manual(values = rainbow(length(unique(ALpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(ALpitch()$`PitchType`)))) +
       theme_minimal()
   })
   output$ALAll_release_side_height_plot <- renderPlot({
-    ggplot(ALpitch(), aes(x = RelSide, y = RelHeight, color = `Pitch.Type`)) +
+    ggplot(ALpitch(), aes(x = RelSide, y = RelHeight, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_vline(xintercept = 0, linetype = "dashed") +
       geom_hline(yintercept = 4, linetype = "dashed") +
-      xlim(-3, 3) +
-      ylim(1, 7) +
+      xlim(-4, 4) +
+      ylim(0, 8) +
       labs(x = "Release Side (ft)", y = "Release Height (ft)", title = "Release Point") +
-      scale_color_manual(values = rainbow(length(unique(ALpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(ALpitch()$`PitchType`)))) +
       theme_minimal()
   })
   output$ALAll_plate_side_height_plot <- renderPlot({
-    ggplot(ALpitch(), aes(x = plate_x, y = plate_z, color = `Pitch.Type`)) +
+    ggplot(ALpitch(), aes(x = plate_x, y = plate_z, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_segment(x = -17/24, y = 1.5, xend = 17/24, yend = 1.5, color = "black") +
       geom_segment(x = -17/24, y = 1.5, xend = -17/24, yend = 3.5, color = "black") +
@@ -318,45 +319,45 @@ server <- function(input, output) {
       xlim(-4, 4) +
       ylim(-1, 7) +
       labs(x = "Plate Side (ft)", y = "Plate Height (ft)", title = "Pitch Location") +
-      scale_color_manual(values = rainbow(length(unique(ALpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(ALpitch()$`PitchType`)))) +
       theme_minimal()
   })
   
   output$NLAll_horz_IVB_plot <- renderPlot({
-    ggplot(NLpitch(), aes(x = `HB`, y = `IVB`, color = `Pitch.Type`)) +
+    ggplot(NLpitch(), aes(x = `HB`, y = `IVB`, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_vline(xintercept = 0, linetype = "dashed") +
       geom_hline(yintercept = 0, linetype = "dashed") +
-      xlim(-20, 20) +
-      ylim(-20, 20) +
+      xlim(-25, 25) +
+      ylim(-25, 25) +
       labs(x = "Horizontal Break (in)", y = "Induced Vertical Break (in)", title = "Movement") +
-      scale_color_manual(values = rainbow(length(unique(NLpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(NLpitch()$`PitchType`)))) +
       theme_minimal()
   })
   output$NLAll_velocity_spin_plot <- renderPlot({
-    ggplot(NLpitch(), aes(x = release_speed, y = release_spin_rate, color = `Pitch.Type`)) +
+    ggplot(NLpitch(), aes(x = release_speed, y = release_spin_rate, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_vline(xintercept = 80, linetype = "dashed") +
       geom_hline(yintercept = 2000, linetype = "dashed") +
       xlim(60, 100) +
       ylim(1000, 3000) +
       labs(x = "Velocity (mph)", y = "Spin Rate (rpm)", title = "Velocity vs Spin Rate") +
-      scale_color_manual(values = rainbow(length(unique(NLpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(NLpitch()$`PitchType`)))) +
       theme_minimal()
   })
   output$NLAll_release_side_height_plot <- renderPlot({
-    ggplot(NLpitch(), aes(x = RelSide, y = RelHeight, color = `Pitch.Type`)) +
+    ggplot(NLpitch(), aes(x = RelSide, y = RelHeight, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_vline(xintercept = 0, linetype = "dashed") +
       geom_hline(yintercept = 4, linetype = "dashed") +
-      xlim(-3, 3) +
-      ylim(1, 7) +
+      xlim(-4, 4) +
+      ylim(0, 8) +
       labs(x = "Release Side (ft)", y = "Release Height (ft)", title = "Release Point") +
-      scale_color_manual(values = rainbow(length(unique(NLpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(NLpitch()$`PitchType`)))) +
       theme_minimal()
   })
   output$NLAll_plate_side_height_plot <- renderPlot({
-    ggplot(NLpitch(), aes(x = plate_x, y = plate_z, color = `Pitch.Type`)) +
+    ggplot(NLpitch(), aes(x = plate_x, y = plate_z, color = `PitchType`)) +
       geom_point(size = 3) +
       geom_segment(x = -17/24, y = 1.5, xend = 17/24, yend = 1.5, color = "black") +
       geom_segment(x = -17/24, y = 1.5, xend = -17/24, yend = 3.5, color = "black") +
@@ -365,7 +366,7 @@ server <- function(input, output) {
       xlim(-4, 4) +
       ylim(-1, 7) +
       labs(x = "Plate Side (ft)", y = "Plate Height (ft)", title = "Pitch Location") +
-      scale_color_manual(values = rainbow(length(unique(NLpitch()$`Pitch.Type`)))) +
+      scale_color_manual(values = rainbow(length(unique(NLpitch()$`PitchType`)))) +
       theme_minimal()
   })
 

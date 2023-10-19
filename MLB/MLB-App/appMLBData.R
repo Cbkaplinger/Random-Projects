@@ -27,12 +27,63 @@ NLleagueNameStart <- read.csv("NLleagueNameStart.csv")
 
 MLBpitches = bind_rows(ALpitches, NLpitches)
 MLBleaguePitch = bind_rows(ALleaguePitch, NLleaguePitch) %>%
-  arrange(Name, Pitch.Type)
+  arrange(Name, PitchType)
 MLBleagueName = bind_rows(ALleagueName, NLleagueName)
 MLBleagueNameStart = bind_rows(ALleagueNameStart, NLleagueNameStart)
 
+MLBGrouped = MLBpitches %>%
+  group_by(Name, game_date) %>%
+  summarize(
+    Pitches = n(),
+    Velo = round(mean(release_speed), 2),
+    SpinRate = round(mean(release_spin_rate), 2),
+    IVB = round(mean(IVB), 2),
+    HB = round(mean(HB), 2),
+    RelHeight = round(mean(RelHeight), 2),
+    RelSide = round(mean(RelSide), 2),
+    Extension = round(mean(release_extension), 2),
+    AVGExitVelo = round(mean(launch_speed, na.rm = TRUE), 2),
+    xwOBA = round(mean(estimated_woba_using_speedangle, na.rm = TRUE), 2),
+    RunValue = round(mean(delta_run_exp), 2),
+    `Stuff+` = round(mean(Stuff), 2))  %>%
+  mutate(AVGExitVelo = ifelse(is.na(AVGExitVelo), 0, AVGExitVelo),
+         xwOBA = ifelse(is.na(xwOBA), 0, xwOBA))
 
+ALGrouped = ALpitches %>%
+  group_by(Name, game_date) %>%
+  summarize(
+    Pitches = n(),
+    Velo = round(mean(release_speed), 2),
+    SpinRate = round(mean(release_spin_rate), 2),
+    IVB = round(mean(IVB), 2),
+    HB = round(mean(HB), 2),
+    RelHeight = round(mean(RelHeight), 2),
+    RelSide = round(mean(RelSide), 2),
+    Extension = round(mean(release_extension), 2),
+    AVGExitVelo = round(mean(launch_speed, na.rm = TRUE), 2),
+    xwOBA = round(mean(estimated_woba_using_speedangle, na.rm = TRUE), 2),
+    RunValue = round(mean(delta_run_exp), 2),
+    `Stuff+` = round(mean(StuffPlus), 2)) %>%
+  mutate(AVGExitVelo = ifelse(is.na(AVGExitVelo), 0, AVGExitVelo),
+         xwOBA = ifelse(is.na(xwOBA), 0, xwOBA))
 
+NLGrouped = NLpitches %>%
+  group_by(Name, game_date) %>%
+  summarize(
+    Pitches = n(),
+    Velo = round(mean(release_speed), 2),
+    SpinRate = round(mean(release_spin_rate), 2),
+    IVB = round(mean(IVB), 2),
+    HB = round(mean(HB), 2),
+    RelHeight = round(mean(RelHeight), 2),
+    RelSide = round(mean(RelSide), 2),
+    Extension = round(mean(release_extension), 2),
+    AVGExitVelo = round(mean(launch_speed, na.rm = TRUE), 2),
+    xwOBA = round(mean(estimated_woba_using_speedangle, na.rm = TRUE), 2),
+    RunValue = round(mean(delta_run_exp), 2),
+    `Stuff+` = round(mean(StuffPlus), 2))  %>%
+  mutate(AVGExitVelo = ifelse(is.na(AVGExitVelo), 0, AVGExitVelo),
+         xwOBA = ifelse(is.na(xwOBA), 0, xwOBA))
 
 
 
