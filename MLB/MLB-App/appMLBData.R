@@ -5,12 +5,12 @@ library(eeptools)
 
 # Loading in the data
 # Change the file path to wherever you have it on your computer
-# ALpitches <- read.csv("~/Desktop/Random-Projects/MLB/MLB-App/ALpitches.csv")
+#ALpitches <- read.csv("~/Desktop/Random-Projects/MLB/MLB-App/ALpitches.csv")
 # ALleaguePitch <- read.csv("~/Desktop/Random-Projects/MLB/MLB-App/ALleaguePitch.csv")
 # ALleagueName <- read.csv("~/Desktop/Random-Projects/MLB/MLB-App/ALleagueName.csv")
 # ALleagueNameStart <- read.csv("~/Desktop/Random-Projects/MLB/MLB-App/ALleagueNameStart.csv")
 #
-# NLpitches <- read.csv("~/Desktop/Random-Projects/MLB/MLB-App/NLpitches.csv")
+#NLpitches <- read.csv("~/Desktop/Random-Projects/MLB/MLB-App/NLpitches.csv")
 # NLleaguePitch <- read.csv("~/Desktop/Random-Projects/MLB/MLB-App/NLleaguePitch.csv")
 # NLleagueName <- read.csv("~/Desktop/Random-Projects/MLB/MLB-App/NLleagueName.csv")
 # NLleagueNameStart <- read.csv("~/Desktop/Random-Projects/MLB/MLB-App/NLleagueNameStart.csv")
@@ -32,7 +32,7 @@ MLBleagueName = bind_rows(ALleagueName, NLleagueName)
 MLBleagueNameStart = bind_rows(ALleagueNameStart, NLleagueNameStart)
 
 MLBGrouped = MLBpitches %>%
-  group_by(Name, game_date) %>%
+  group_by(Name, game_date, PitchType) %>%
   summarize(
     Pitches = n(),
     Velo = round(mean(release_speed), 2),
@@ -42,15 +42,15 @@ MLBGrouped = MLBpitches %>%
     RelHeight = round(mean(RelHeight), 2),
     RelSide = round(mean(RelSide), 2),
     Extension = round(mean(release_extension), 2),
-    AVGExitVelo = round(mean(launch_speed, na.rm = TRUE), 2),
+    `Stuff+` = round(mean(StuffPlus), 2),
     xwOBA = round(mean(estimated_woba_using_speedangle, na.rm = TRUE), 2),
-    RunValue = round(mean(delta_run_exp), 2),
-    `Stuff+` = round(mean(Stuff), 2))  %>%
-  mutate(AVGExitVelo = ifelse(is.na(AVGExitVelo), 0, AVGExitVelo),
+    RunValue = round(sum(delta_run_exp), 2),
+    RV100 = round(mean(delta_run_exp), 2 * 100))  %>%
+  mutate(game_date = as.Date(game_date, format = "%Y-%m-%d"),
          xwOBA = ifelse(is.na(xwOBA), 0, xwOBA))
 
 ALGrouped = ALpitches %>%
-  group_by(Name, game_date) %>%
+  group_by(Name, game_date, PitchType) %>%
   summarize(
     Pitches = n(),
     Velo = round(mean(release_speed), 2),
@@ -60,15 +60,15 @@ ALGrouped = ALpitches %>%
     RelHeight = round(mean(RelHeight), 2),
     RelSide = round(mean(RelSide), 2),
     Extension = round(mean(release_extension), 2),
-    AVGExitVelo = round(mean(launch_speed, na.rm = TRUE), 2),
+    `Stuff+` = round(mean(StuffPlus), 2),
     xwOBA = round(mean(estimated_woba_using_speedangle, na.rm = TRUE), 2),
-    RunValue = round(mean(delta_run_exp), 2),
-    `Stuff+` = round(mean(StuffPlus), 2)) %>%
-  mutate(AVGExitVelo = ifelse(is.na(AVGExitVelo), 0, AVGExitVelo),
+    RunValue = round(sum(delta_run_exp), 2),
+    RV100 = round(mean(delta_run_exp), 2 * 100)) %>%
+  mutate(game_date = as.Date(game_date, format = "%Y-%m-%d"),
          xwOBA = ifelse(is.na(xwOBA), 0, xwOBA))
 
 NLGrouped = NLpitches %>%
-  group_by(Name, game_date) %>%
+  group_by(Name, game_date, PitchType) %>%
   summarize(
     Pitches = n(),
     Velo = round(mean(release_speed), 2),
@@ -78,13 +78,21 @@ NLGrouped = NLpitches %>%
     RelHeight = round(mean(RelHeight), 2),
     RelSide = round(mean(RelSide), 2),
     Extension = round(mean(release_extension), 2),
-    AVGExitVelo = round(mean(launch_speed, na.rm = TRUE), 2),
+    `Stuff+` = round(mean(StuffPlus), 2),
     xwOBA = round(mean(estimated_woba_using_speedangle, na.rm = TRUE), 2),
-    RunValue = round(mean(delta_run_exp), 2),
-    `Stuff+` = round(mean(StuffPlus), 2))  %>%
-  mutate(AVGExitVelo = ifelse(is.na(AVGExitVelo), 0, AVGExitVelo),
+    RunValue = round(sum(delta_run_exp), 2),
+    RV100 = round(mean(delta_run_exp), 2 * 100))  %>%
+  mutate(game_date = as.Date(game_date, format = "%Y-%m-%d"),
          xwOBA = ifelse(is.na(xwOBA), 0, xwOBA))
 
+
+print(unique(MLBGrouped$`PitchType`))
+
+# MLBGrouped %>%
+#   ggplot(mapping = aes(x = game_date, y = Velo, color = PitchType)) +
+#   geom_line() +
+#   scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+#   theme_minimal()
 
 
 # Color codes each column that's going to be displayed

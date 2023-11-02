@@ -53,12 +53,16 @@ ui <- dashboardPage(
       tabItem(tabName = "MLBAll_tab",
               fluidRow(
                 selectInput("name_select1", "Select Name:", choices = unique(MLBleaguePitch$Name)),
-                column(width = 5, plotOutput("MLBAll_horz_IVB_plot")),
-                column(width = 5, plotOutput("MLBAll_velocity_spin_plot")),
-                column(width = 5, plotOutput("MLBAll_release_side_height_plot")),
-                column(width = 5, plotOutput("MLBAll_plate_side_height_plot"))
+                column(width = 6, plotOutput("MLBAll_horz_IVB_plot")),
+                column(width = 6, plotOutput("MLBAll_velocity_spin_plot")),
+                column(width = 6, plotOutput("MLBAll_release_side_height_plot")),
+                column(width = 6, plotOutput("MLBAll_plate_side_height_plot"))
                 ),
-              DTOutput("data_table_MLBAll")
+              DTOutput("data_table_MLBAll"),
+              column(width = 12, plotOutput("MLBAllLineplot")),
+              radioButtons("MLB", "Choose a variable:",
+                           choices = c("Velo", "SpinRate", "IVB", "HB", "RelHeight", "Extension", "Stuff+", "xwOBA", "RunValue", "RV/100"),
+                           selected = "Velo")
               ),
       tabItem(tabName = "MLBPitch_tab",
               DTOutput("data_table_MLBAll2")
@@ -77,7 +81,11 @@ ui <- dashboardPage(
                 column(width = 5, plotOutput("ALAll_release_side_height_plot")),
                 column(width = 5, plotOutput("ALAll_plate_side_height_plot"))
               ),
-              DTOutput("data_table_ALAll")
+              DTOutput("data_table_ALAll"),
+              plotOutput("ALAllLineplot"),
+              radioButtons("AL", "Choose a variable:",
+                           choices = c("Velo", "SpinRate", "IVB", "HB", "RelHeight", "Extension", "Stuff+", "xwOBA", "RunValue", "RV/100"),
+                           selected = "Velo")
               ),
       tabItem(tabName = "ALPitch_tab",
               DTOutput("data_table_ALAll2")
@@ -96,7 +104,11 @@ ui <- dashboardPage(
                 column(width = 5, plotOutput("NLAll_release_side_height_plot")),
                 column(width = 5, plotOutput("NLAll_plate_side_height_plot"))
               ),
-              DTOutput("data_table_NLAll")
+              DTOutput("data_table_NLAll"),
+              plotOutput("NLAllLineplot"),
+              radioButtons("NL", "Choose a variable:",
+                           choices = c("Velo", "SpinRate", "IVB", "HB", "RelHeight", "Extension", "Stuff+", "xwOBA", "RunValue", "RV/100"),
+                           selected = "Velo")
               ),
       tabItem(tabName = "NLPitch_tab",
               DTOutput("data_table_NLAll2")
@@ -177,6 +189,21 @@ server <- function(input, output) {
   
   NLNameStart = reactive({
     NLleagueNameStart
+  })
+  
+  MLBLineData = reactive({
+    MLBGrouped %>%
+      filter(Name == input$name_select1)
+  })
+  
+  ALLineData = reactive({
+    ALGrouped %>%
+      filter(Name == input$name_select2)
+  })
+  
+  NLLineData = reactive({
+    NLGrouped %>%
+      filter(Name == input$name_select3)
   })
   
   # Render the tables
@@ -278,6 +305,70 @@ server <- function(input, output) {
       theme_minimal()
   })
   
+  output$MLBAllLineplot <- renderPlot({
+    if (input$MLB == "Velo") {
+      ggplot(MLBLineData(), aes(x = game_date, y = Velo, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$MLB == "SpinRate") {
+      ggplot(MLBLineData(), aes(x = game_date, y = SpinRate, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$MLB == "IVB") {
+      ggplot(MLBLineData(), aes(x = game_date, y = IVB, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$MLB == "HB") {
+      ggplot(MLBLineData(), aes(x = game_date, y = HB, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$MLB == "RelHeight") {
+      ggplot(MLBLineData(), aes(x = game_date, y = RelHeight, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$MLB == "Extension") {
+      ggplot(MLBLineData(), aes(x = game_date, y = Extension, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$MLB == "Stuff+") {
+      ggplot(MLBLineData(), aes(x = game_date, y = `Stuff+`, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$MLB == "xwOBA") {
+      ggplot(MLBLineData(), aes(x = game_date, y = xwOBA, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$MLB == "RunValue") {
+      ggplot(MLBLineData(), aes(x = game_date, y = RunValue, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else {
+      ggplot(MLBLineData(), aes(x = game_date, y = RV100, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
+        theme_minimal()
+    } 
+  })
+  
   output$ALAll_horz_IVB_plot <- renderPlot({
     ggplot(ALpitch(), aes(x = `HB`, y = `IVB`, color = `PitchType`)) +
       geom_point(size = 3) +
@@ -326,6 +417,70 @@ server <- function(input, output) {
       theme_minimal()
   })
   
+  output$ALAllLineplot <- renderPlot({
+    if (input$AL == "Velo") {
+      ggplot(ALLineData(), aes(x = game_date, y = Velo, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(ALLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$AL == "SpinRate") {
+      ggplot(ALLineData(), aes(x = game_date, y = SpinRate, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(ALLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$AL == "IVB") {
+      ggplot(ALLineData(), aes(x = game_date, y = IVB, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(ALLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$AL == "HB") {
+      ggplot(ALLineData(), aes(x = game_date, y = HB, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(ALLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$AL == "RelHeight") {
+      ggplot(ALLineData(), aes(x = game_date, y = RelHeight, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(ALLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$AL == "Extension") {
+      ggplot(ALLineData(), aes(x = game_date, y = Extension, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(ALLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$AL == "Stuff+") {
+      ggplot(ALLineData(), aes(x = game_date, y = `Stuff+`, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(ALLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$AL == "xwOBA") {
+      ggplot(ALLineData(), aes(x = game_date, y = xwOBA, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(ALLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$AL == "RunValue") {
+      ggplot(ALLineData(), aes(x = game_date, y = RunValue, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(ALLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else {
+      ggplot(ALLineData(), aes(x = game_date, y = RV100, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(ALLineData()$`PitchType`)))) +
+        theme_minimal()
+    } 
+  })
+  
   output$NLAll_horz_IVB_plot <- renderPlot({
     ggplot(NLpitch(), aes(x = `HB`, y = `IVB`, color = `PitchType`)) +
       geom_point(size = 3) +
@@ -372,7 +527,70 @@ server <- function(input, output) {
       scale_color_manual(values = rainbow(length(unique(NLpitch()$`PitchType`)))) +
       theme_minimal()
   })
-
+  
+  output$NLAllLineplot <- renderPlot({
+    if (input$NL == "Velo") {
+      ggplot(NLLineData(), aes(x = game_date, y = Velo, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(NLLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$NL == "SpinRate") {
+      ggplot(NLLineData(), aes(x = game_date, y = SpinRate, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(NLLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$NL == "IVB") {
+      ggplot(NLLineData(), aes(x = game_date, y = IVB, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(NLLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$NL == "HB") {
+      ggplot(NLLineData(), aes(x = game_date, y = HB, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(NLLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$NL == "RelHeight") {
+      ggplot(NLLineData(), aes(x = game_date, y = RelHeight, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(NLLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$NL == "Extension") {
+      ggplot(NLLineData(), aes(x = game_date, y = Extension, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(NLLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$NL == "Stuff+") {
+      ggplot(NLLineData(), aes(x = game_date, y = `Stuff+`, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(NLLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$NL == "xwOBA") {
+      ggplot(NLLineData(), aes(x = game_date, y = xwOBA, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(NLLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else if (input$NL == "RunValue") {
+      ggplot(NLLineData(), aes(x = game_date, y = RunValue, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(NLLineData()$`PitchType`)))) +
+        theme_minimal()
+    } else {
+      ggplot(NLLineData(), aes(x = game_date, y = RV100, color = PitchType)) +
+        geom_line() +
+        xlab("Date") +
+        scale_color_manual(values = rainbow(length(unique(NLLineData()$`PitchType`)))) +
+        theme_minimal()
+    } 
+  })
   
 }
 
