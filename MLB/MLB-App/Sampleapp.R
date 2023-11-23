@@ -49,83 +49,23 @@ ui <- dashboardPage(
 
 # Define server logic
 server <- function(input, output) {
-  MLBLineData = reactive({
-    MLBGrouped %>%
-      filter(Name == input$name_select1)
-    })
   
-  output$MLBAllLineplot <- renderPlot({
-    if (input$MLB == "Velo") {
-      ggplot(MLBLineData(), aes(x = game_date, y = Velo, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "SpinRate") {
-      ggplot(MLBLineData(), aes(x = game_date, y = SpinRate, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "IVB") {
-      ggplot(MLBLineData(), aes(x = game_date, y = IVB, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "HB") {
-      ggplot(MLBLineData(), aes(x = game_date, y = HB, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "RelHeight") {
-      ggplot(MLBLineData(), aes(x = game_date, y = RelHeight, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "Extension") {
-      ggplot(MLBLineData(), aes(x = game_date, y = Extension, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "Stuff+") {
-      ggplot(MLBLineData(), aes(x = game_date, y = `Stuff+`, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "AVGExitVelo") {
-      ggplot(MLBLineData(), aes(x = game_date, y = AVGExitVelo, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "xwOBA") {
-      ggplot(MLBLineData(), aes(x = game_date, y = xwOBA, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "RunValue") {
-      ggplot(MLBLineData(), aes(x = game_date, y = RunValue, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "CS%") {
-      ggplot(MLBLineData(), aes(x = game_date, y = CS, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "SwStr%") {
-      ggplot(MLBLineData(), aes(x = game_date, y = SwStr, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else if (input$MLB == "CSW%") {
-      ggplot(MLBLineData(), aes(x = game_date, y = CSW, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } else {
-      ggplot(MLBLineData(), aes(x = game_date, y = RV100, color = PitchType)) +
-        geom_line() +
-        scale_color_manual(values = rainbow(length(unique(MLBLineData()$`PitchType`)))) +
-        theme_minimal()
-    } 
+  MLBpitch = reactive({
+    MLBpitches %>%
+      filter(Name == input$name_select1)
+  })
+  
+  output$MLBAll_plate_side_height_plot <- renderPlot({
+    ggplot(MLBpitch(), aes(x = plate_x, y = plate_z)) +
+      geom_hex(bins = 20, fill = "red", color = "blue") +
+      geom_segment(x = -17/24, y = 1.5, xend = 17/24, yend = 1.5, color = "black") +
+      geom_segment(x = -17/24, y = 1.5, xend = -17/24, yend = 3.5, color = "black") +
+      geom_segment(x = -17/24, y = 3.5, xend = 17/24, yend = 3.5, color = "black") +
+      geom_segment(x = 17/24, y = 1.5, xend = 17/24, yend = 3.5, color = "black") +
+      xlim(-4, 4) +
+      ylim(-1, 7) +
+      labs(x = "Plate Side (ft)", y = "Plate Height (ft)", title = "Pitch Location") +
+      theme_minimal()
   })
   
   

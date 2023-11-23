@@ -2,6 +2,7 @@ library(readxl)
 library(tidyverse)
 library(dplyr)
 library(eeptools)
+library(hexbin)
 
 # Loading in the data
 # Change the file path to wherever you have it on your computer
@@ -86,7 +87,7 @@ NLGrouped = NLpitches %>%
          xwOBA = ifelse(is.na(xwOBA), 0, xwOBA))
 
 
-print(unique(MLBGrouped$`PitchType`))
+
 
 # MLBGrouped %>%
 #   ggplot(mapping = aes(x = game_date, y = Velo, color = PitchType)) +

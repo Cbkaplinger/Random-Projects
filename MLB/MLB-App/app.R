@@ -76,13 +76,13 @@ ui <- dashboardPage(
       tabItem(tabName = "ALAll_tab",
               fluidRow(
                 selectInput("name_select2", "Select Name:", choices = unique(ALleaguePitch$Name)),
-                column(width = 5, plotOutput("ALAll_horz_IVB_plot")),
-                column(width = 5, plotOutput("ALAll_velocity_spin_plot")),
-                column(width = 5, plotOutput("ALAll_release_side_height_plot")),
-                column(width = 5, plotOutput("ALAll_plate_side_height_plot"))
+                column(width = 6, plotOutput("ALAll_horz_IVB_plot")),
+                column(width = 6, plotOutput("ALAll_velocity_spin_plot")),
+                column(width = 6, plotOutput("ALAll_release_side_height_plot")),
+                column(width = 6, plotOutput("ALAll_plate_side_height_plot"))
               ),
               DTOutput("data_table_ALAll"),
-              plotOutput("ALAllLineplot"),
+              column(width = 12, plotOutput("ALAllLineplot")),
               radioButtons("AL", "Choose a variable:",
                            choices = c("Velo", "SpinRate", "IVB", "HB", "RelHeight", "Extension", "Stuff+", "xwOBA", "RunValue", "RV/100"),
                            selected = "Velo")
@@ -99,13 +99,13 @@ ui <- dashboardPage(
       tabItem(tabName = "NLAll_tab",
               fluidRow(
                 selectInput("name_select3", "Select Name:", choices = unique(NLleaguePitch$Name)),
-                column(width = 5, plotOutput("NLAll_horz_IVB_plot")),
-                column(width = 5, plotOutput("NLAll_velocity_spin_plot")),
-                column(width = 5, plotOutput("NLAll_release_side_height_plot")),
-                column(width = 5, plotOutput("NLAll_plate_side_height_plot"))
+                column(width = 6, plotOutput("NLAll_horz_IVB_plot")),
+                column(width = 6, plotOutput("NLAll_velocity_spin_plot")),
+                column(width = 6, plotOutput("NLAll_release_side_height_plot")),
+                column(width = 6, plotOutput("NLAll_plate_side_height_plot"))
               ),
               DTOutput("data_table_NLAll"),
-              plotOutput("NLAllLineplot"),
+              column(width = 12, plotOutput("NLAllLineplot")),
               radioButtons("NL", "Choose a variable:",
                            choices = c("Velo", "SpinRate", "IVB", "HB", "RelHeight", "Extension", "Stuff+", "xwOBA", "RunValue", "RV/100"),
                            selected = "Velo")
@@ -292,16 +292,16 @@ server <- function(input, output) {
   })
   
   output$MLBAll_plate_side_height_plot <- renderPlot({
-    ggplot(MLBpitch(), aes(x = plate_x, y = plate_z, color = `PitchType`)) +
-      geom_point(size = 3) +
-      geom_segment(x = -17/24, y = 1.5, xend = 17/24, yend = 1.5, color = "black") +
+    ggplot(MLBpitch(), aes(x = plate_x, y = plate_z)) +
+      geom_hex() +
+      scale_fill_gradient(low = "white", high = "red") +
+      geom_segment(x = -17/24, y = 1.5, xend = 17/24, yend = 1.5, color = "black") + 
       geom_segment(x = -17/24, y = 1.5, xend = -17/24, yend = 3.5, color = "black") +
       geom_segment(x = -17/24, y = 3.5, xend = 17/24, yend = 3.5, color = "black") +
       geom_segment(x = 17/24, y = 1.5, xend = 17/24, yend = 3.5, color = "black") +
-      xlim(-4, 4) +
-      ylim(-1, 7) +
-      labs(x = "Plate Side (ft)", y = "Plate Height (ft)", title = "Pitch Location") +
-      scale_color_manual(values = rainbow(length(unique(MLBpitch()$`PitchType`)))) +
+      xlim(-3, 3) +
+      ylim(-1, 5) +
+      labs(x = "Plate Side (ft)", y = "Plate Height (ft)", title = "Pitch Location", fill = "Count") +
       theme_minimal()
   })
   
@@ -404,16 +404,16 @@ server <- function(input, output) {
   })
   
   output$ALAll_plate_side_height_plot <- renderPlot({
-    ggplot(ALpitch(), aes(x = plate_x, y = plate_z, color = `PitchType`)) +
-      geom_point(size = 3) +
-      geom_segment(x = -17/24, y = 1.5, xend = 17/24, yend = 1.5, color = "black") +
+    ggplot(ALpitch(), aes(x = plate_x, y = plate_z)) +
+      geom_hex() +
+      scale_fill_gradient(low = "white", high = "red") +
+      geom_segment(x = -17/24, y = 1.5, xend = 17/24, yend = 1.5, color = "black") + 
       geom_segment(x = -17/24, y = 1.5, xend = -17/24, yend = 3.5, color = "black") +
       geom_segment(x = -17/24, y = 3.5, xend = 17/24, yend = 3.5, color = "black") +
       geom_segment(x = 17/24, y = 1.5, xend = 17/24, yend = 3.5, color = "black") +
-      xlim(-4, 4) +
-      ylim(-1, 7) +
-      labs(x = "Plate Side (ft)", y = "Plate Height (ft)", title = "Pitch Location") +
-      scale_color_manual(values = rainbow(length(unique(ALpitch()$`PitchType`)))) +
+      xlim(-3, 3) +
+      ylim(-1, 5) +
+      labs(x = "Plate Side (ft)", y = "Plate Height (ft)", title = "Pitch Location", fill = "Count") +
       theme_minimal()
   })
   
@@ -515,16 +515,16 @@ server <- function(input, output) {
       theme_minimal()
   })
   output$NLAll_plate_side_height_plot <- renderPlot({
-    ggplot(NLpitch(), aes(x = plate_x, y = plate_z, color = `PitchType`)) +
-      geom_point(size = 3) +
-      geom_segment(x = -17/24, y = 1.5, xend = 17/24, yend = 1.5, color = "black") +
+    ggplot(NLpitch(), aes(x = plate_x, y = plate_z)) +
+      geom_hex() +
+      scale_fill_gradient(low = "white", high = "red") +
+      geom_segment(x = -17/24, y = 1.5, xend = 17/24, yend = 1.5, color = "black") + 
       geom_segment(x = -17/24, y = 1.5, xend = -17/24, yend = 3.5, color = "black") +
       geom_segment(x = -17/24, y = 3.5, xend = 17/24, yend = 3.5, color = "black") +
       geom_segment(x = 17/24, y = 1.5, xend = 17/24, yend = 3.5, color = "black") +
-      xlim(-4, 4) +
-      ylim(-1, 7) +
-      labs(x = "Plate Side (ft)", y = "Plate Height (ft)", title = "Pitch Location") +
-      scale_color_manual(values = rainbow(length(unique(NLpitch()$`PitchType`)))) +
+      xlim(-3, 3) +
+      ylim(-1, 5) +
+      labs(x = "Plate Side (ft)", y = "Plate Height (ft)", title = "Pitch Location", fill = "Count") +
       theme_minimal()
   })
   
